@@ -126,10 +126,9 @@ module.exports={
                     tmap.add("" + teamRule.cheat).color(teamData.team.color);
                     tmap.add("" + (teamRule.ai ? "AI: T" + teamRule.aiTier + (teamRule.aiCoreSpawn ? ", Core Spawn" : "") : "No")).color(teamData.team.color);
                 }
+                this.addCloseButton();
             }
-    
         });
-        mapInfoD.addCloseButton();
         mapInfoD.setup();
         mapInfoD.show();
     }
