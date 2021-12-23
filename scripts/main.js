@@ -1,41 +1,76 @@
-require("MI2Settings")
-const version = "0.1.0";
-
+require("mapinfo")
 
 Events.on(EventType.ClientLoadEvent, e => {
-    const UIHudGroup = Vars.ui.hudGroup;
+    const version = "0.2.0";
+    const buttonStyleTogglet = Styles.logicTogglet;
+    const buttonStyle = Styles.logict;
+
     const dragTable = extend(Table, {
         curx : 100, cury : 200, flip : true, fromx : 0, fromy : 0
     });
-    dragTable.name("MI2U_Main")
-    UIHudGroup.addChild(dragTable);
+    dragTable.name = "MI2U_Main";
+    Vars.ui.hudGroup.addChild(dragTable);
 
-    dragTable.left().bottom().setFillParent(true);
+    dragTable.left().bottom();
     dragTable.update(() => {
+        dragTable.curx = Mathf.clamp(dragTable.curx, 0, Core.graphics.getWidth() - 100 - dragTable.getWidth());
+        dragTable.cury = Mathf.clamp(dragTable.cury, 0, Core.graphics.getHeight() - 100 - dragTable.getHeight());
         dragTable.setPosition(dragTable.curx, dragTable.cury);
-    });
-    
+    }); 
 
-    var titleLabel = new Label("MI2U");
-    titleLabel.addListener(extend(InputListener, {
-        touchDown(event, x, y, pointer, button){
-            dragTable.fromx = x;
-            dragTable.fromy = y;
-            return true;
-        },
-        touchDragged(event, x, y, pointer){
-            let v = dragTable.localToStageCoordinates(Tmp.v1.set(x, y));
-            dragTable.curx = v.x - dragTable.fromx;
-            dragTable.cury = v.y - dragTable.fromy;
-        }
-    }));
-    
-    dragTable.add(titleLabel);
-    dragTable.row();
-    dragTable.label(() => "" + version);
-    dragTable.row();
-    dragTable.button(Icon.refreshSmall, () => {
-        Call.sendChatMessage("/sync");
-    }).size(36, 36);
-    
+
+
+    dragTable.table(cons(t => {
+        var titleLabel = new Label("MI2U");
+        titleLabel.setAlignment(Align.center);
+        titleLabel.addListener(extend(InputListener, {
+            touchDown(event, x, y, pointer, button){
+                dragTable.fromx = x;
+                dragTable.fromy = y;
+                return true;
+            },
+            touchDragged(event, x, y, pointer){
+                let v = dragTable.localToStageCoordinates(Tmp.v1.set(x, y));
+                dragTable.curx = v.x - dragTable.fromx;
+                dragTable.cury = v.y - dragTable.fromy;
+            }
+        }));
+        
+        t.add(titleLabel).center().fillX();
+        t.row();
+        t.label(() => "" + version);
+        t.row();
+
+        t.table(cons(sqb => {
+            sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
+                Call.sendChatMessage("/sync");
+            }).size(36, 36);
+        
+            sqb.button("BP", buttonStyle, () => {
+                rebuildBlocks();
+            }).size(36, 36);
+        }));
+        
+        t.row();
+
+        t.table(cons(rqb =>  {      
+            rqb.button("MapInfo", buttonStyle, () => {
+                require("mapinfo").show();
+            }).size(108, 36);
+        }));
+
+    })).get().background(Styles.black6);
 });
+
+function rebuildBlocks(){
+    var player = Vars.player;
+    if(!player.unit().canBuild()) return;
+    var p = 0;
+    for(let bpid = 0; bpid < Vars.state.teams.get(player.team()).blocks.size; bpid++){
+        let block = Vars.state.teams.get(player.team()).blocks.get(bpid);
+        if(Mathf.len(block.x - player.tileX(), block.y - player.tileY()) >= 200) continue;
+        p++;
+        if(p > 511) break;
+        player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, Vars.content.block(block.block), block.config));
+    }
+}
