@@ -3,7 +3,7 @@ require("healthBar")
 var enUnitHealthBar = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
-    const version = "0.2.0";
+    const version = "0.3.0";
     const buttonStyleTogglet = Styles.logicTogglet;
     const buttonStyle = Styles.logict;
 
