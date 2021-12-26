@@ -1,6 +1,11 @@
-require("mapinfo")
-require("healthBar")
+const mapInfo = require("mapinfo")
+const healthBar = require("healthBar")
 var enUnitHealthBar = false;
+
+Events.run(Trigger.draw, () => {
+    if(!Vars.state.isGame() || !enUnitHealthBar) return;
+    healthBar.drawAll();
+});
 
 Events.on(EventType.ClientLoadEvent, e => {
     const version = "0.3.0";
@@ -57,7 +62,7 @@ Events.on(EventType.ClientLoadEvent, e => {
 
         t.table(cons(rqb =>  {      
             rqb.button("MapInfo", buttonStyle, () => {
-                require("mapinfo").show();
+                mapInfo.show();
             }).size(108, 36);
         }));
 
@@ -68,11 +73,7 @@ Events.on(EventType.ClientLoadEvent, e => {
         t.table(cons(t => {
             t.button("uhp", buttonStyleTogglet, () => {
                 enUnitHealthBar = !enUnitHealthBar;
-            }).update(b => {
-                b.setChecked(enUnitHealthBar);
-                if(!Vars.state.isGame() || !enUnitHealthBar) return;
-                require("healthBar").drawAll();
-            }).size(48,36);
+            }).checked(() => enUnitHealthBar).size(48,36);
         }));
 
     })).get().background(Styles.black6);
