@@ -2,8 +2,8 @@
     "name": "MI2-Utilities",
     "displayName": "MI2 Utilities",
     "author": "BlackDeluxeCat",
-    "description": "A Mindustry Mod That Adds Useful Vanilla Utilities. \nFormerly MI2-Client.\n\nMindustry模组，添加一些有意思的原版辅助。前身是MI2端。",
-    "version": "0.3.0",
+    "description": "A Mindustry Mod That Adds Useful Vanilla Utilities. \nMI2-Client Transplantation.\n\nMindustry模组，添加一些实用原版辅助。MI2端移植。",
+    "version": "0.3.1",
     "minGameVersion": 126,
     "hidden": true
 }
