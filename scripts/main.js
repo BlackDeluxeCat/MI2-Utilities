@@ -1,5 +1,5 @@
-require("mapinfo")
-require("healthBar")
+const mapInfo = require("mapinfo")
+const healthBar = require("healthBar")
 var enUnitHealthBar = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
@@ -57,29 +57,22 @@ Events.on(EventType.ClientLoadEvent, e => {
 
         t.table(cons(rqb =>  {      
             rqb.button("MapInfo", buttonStyle, () => {
-                require("mapinfo").show();
+                mapInfo.show();
             }).size(108, 36);
         }));
 
         t.row();
 
         //hhh the hell of effect buttons
-        var uHealthBarB = 
         t.table(cons(t => {
             t.button("uhp", buttonStyleTogglet, () => {
                 enUnitHealthBar = !enUnitHealthBar;
             }).update(b => {
                 b.setChecked(enUnitHealthBar);
-                if(!Vars.state.isGame() || !enUnitHealthBar) return;
-                require("healthBar").drawAll();
             }).size(48,36);
         }));
 
     })).get().background(Styles.black6);
-
-
-
-
 });
 
 function rebuildBlocks(){
@@ -94,3 +87,8 @@ function rebuildBlocks(){
         player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, Vars.content.block(block.block), block.config));
     }
 }
+
+Events.run(Trigger.draw, () => {
+    if(!Vars.state.isGame() || !enUnitHealthBar) return;
+    healthBar.drawAll();
+});
