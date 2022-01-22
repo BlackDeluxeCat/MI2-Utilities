@@ -8,13 +8,68 @@ module.exports={
                 var control = Vars.control;
                 var iconMed = Vars.iconMed;
                 var content = Vars.content;
+                var world = Vars.world;
+
+                let colorEnable = new Color(1,1,1);
+                let colorDisable = new Color(1,0.3,0.3,0.8);
 
                 this.cont.clear();
                 this.buttons.clear();
     
+                let trule = new Table();
+                this.cont.add(trule);
+                this.cont.row();
+
                 let twave = new Table();
                 this.cont.add(twave);
-                
+                this.cont.row();
+
+                let tmap = new Table();
+                let teamPane = new ScrollPane(tmap);
+                this.cont.add(teamPane);
+
+                this.addCloseButton();
+
+                /* rules */
+                trule.table(cons(t => {
+                    
+                    t.label(() => "" + String.fromCharCode(Iconc.statusBurning)).get().setColor((state.rules.fire?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.itemBlastCompound)).get().setColor((state.rules.damageExplosions?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.blockThoriumReactor)).get().setColor((state.rules.reactorExplosions?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.itemCopper)).get().setColor((state.rules.unitAmmo?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.blockMicroProcessor)).get().setColor((state.rules.logicUnitBuild?colorEnable:colorDisable));
+                    t.row();
+        
+                    t.label(() => "" + String.fromCharCode(Iconc.blockIlluminator)).get().setColor((state.rules.lighting?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.blockIncinerator)).get().setColor((state.rules.coreIncinerates?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.paste)).get().setColor((state.rules.schematicsAllowed?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.blockCoreNucleus)).get().setColor((state.rules.coreCapture?colorEnable:colorDisable));
+                    t.label(() => "" + String.fromCharCode(Iconc.grid)).get().setColor((state.rules.polygonCoreProtection?colorEnable:colorDisable));
+                    t.row();
+
+                    t.label(() => world != null ? (world.width() + "x" + world.height()):"ohno").colspan(5);
+                    t.row();
+                    t.label(() => "UnitCap:" + state.rules.unitCap + (state.rules.unitCapVariable ? "+" + Iconc.blockCoreShard : "")).colspan(5);
+                }));
+                trule.table(cons(t => {
+                    t.label(() => "BHp ");
+                    t.label(() => "BDmg ");
+                    t.label(() => "UDmg ");
+                    t.label(() => "BCost ");
+                    t.label(() => "BSpd ");
+                    t.label(() => "BRe ");
+                    t.label(() => "USpd ");
+                    t.row();
+            
+                    t.label(() => " " + (state.rules.blockHealthMultiplier));
+                    t.label(() => " " + (state.rules.blockDamageMultiplier));
+                    t.label(() => " " + (state.rules.unitDamageMultiplier));
+                    t.label(() => " " + (state.rules.buildCostMultiplier));
+                    t.label(() => " " + (state.rules.buildSpeedMultiplier));
+                    t.label(() => " " + (state.rules.deconstructRefundMultiplier));
+                    t.label(() => " " + (state.rules.unitBuildSpeedMultiplier));
+                }));
+
                 /* Stats */
                 twave.table(cons(t => {
                     t.label(() => (control.saves.getCurrent() != null ? ("Time: " + control.saves.getCurrent().getPlayTime() + "\n"):"") + 
@@ -94,13 +149,7 @@ module.exports={
                         }
                     });
                 }));
-    
-                this.cont.row();
-    
-                let tmap = new Table();
-                let teamPane = new ScrollPane(tmap);
-                this.cont.add(teamPane);
-                let teams = state.teams.getActive();
+
                 tmap.add("Team").padLeft(5).padRight(5);
                 tmap.add("UBuild Spd").padLeft(5).padRight(5);
                 tmap.add("Unit Dmg").padLeft(5).padRight(5);
@@ -126,7 +175,6 @@ module.exports={
                     tmap.add("" + teamRule.cheat).color(teamData.team.color);
                     tmap.add("" + (teamRule.ai ? "AI: T" + teamRule.aiTier + (teamRule.aiCoreSpawn ? ", Core Spawn" : "") : "No")).color(teamData.team.color);
                 }
-                this.addCloseButton();
             }
         });
         mapInfoD.setup();
