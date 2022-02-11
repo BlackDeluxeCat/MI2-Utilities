@@ -1,14 +1,14 @@
-const mapInfo = require("mapinfo")
-const healthBar = require("healthBar")
-var enUnitHealthBar = false;
+const mapInfo = require("mapinfo");
+const healthBar = require("healthBar");
+const logicHelper = require("logicHelper");
+var enUnitHealthBar = false, enLogicHelper = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
-    const version = "0.3.1";
     const buttonStyleTogglet = Styles.logicTogglet;
     const buttonStyle = Styles.logict;
 
     const dragTable = extend(Table, {
-        curx : 100, cury : 200, flip : true, fromx : 0, fromy : 0
+        curx : 100, cury : 200, fromx : 0, fromy : 0
     });
     dragTable.name = "MI2U_Main";
     Vars.ui.hudGroup.addChild(dragTable);
@@ -19,8 +19,6 @@ Events.on(EventType.ClientLoadEvent, e => {
         dragTable.cury = Mathf.clamp(dragTable.cury, 0, Core.graphics.getHeight() - 100 - dragTable.getHeight());
         dragTable.setPosition(dragTable.curx, dragTable.cury);
     }); 
-
-
 
     dragTable.table(cons(t => {
         var titleLabel = new Label("MI2U");
@@ -39,8 +37,6 @@ Events.on(EventType.ClientLoadEvent, e => {
         }));
         
         t.add(titleLabel).center().fillX();
-        t.row();
-        t.label(() => "" + version);
         t.row();
 
         t.table(cons(sqb => {
@@ -64,15 +60,23 @@ Events.on(EventType.ClientLoadEvent, e => {
         t.row();
 
         //hhh the hell of effect buttons
-        t.table(cons(t => {
-            t.button("uhp", buttonStyleTogglet, () => {
+        t.table(cons(tt => {
+            tt.button("UHp", buttonStyleTogglet, () => {
                 enUnitHealthBar = !enUnitHealthBar;
             }).update(b => {
                 b.setChecked(enUnitHealthBar);
             }).size(48,36);
+
+            tt.button("LH", buttonStyleTogglet, () => {
+                enLogicHelper = !enLogicHelper;
+            }).update(b => {
+                b.setChecked(enLogicHelper);
+            }).size(48,36);
         }));
 
     })).get().background(Styles.black6);
+
+    logicHelper.init();
 });
 
 function rebuildBlocks(){
