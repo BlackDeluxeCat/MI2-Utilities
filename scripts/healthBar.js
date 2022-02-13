@@ -1,8 +1,12 @@
+var content;
+var state;
 module.exports={
     drawAll:function(){
-        var state = Vars.state;
+        state = Vars.state;
+        content = Vars.content;
+        let teamData;
         for(let tid = 0; tid < state.teams.getActive().size; tid++){
-            var teamData = state.teams.getActive().get(tid);
+            teamData = state.teams.getActive().get(tid);
             for(let uid = 0; uid < teamData.units.size; uid++){
                 draw(teamData.units.get(uid));
             }
@@ -13,7 +17,6 @@ module.exports={
 
 function draw(unit){
     //display healthbar by MI2
-    var content = Vars.content;
     Draw.z(Layer.shields + 6);
     Draw.reset();
     if(unit.hitTime > 0){

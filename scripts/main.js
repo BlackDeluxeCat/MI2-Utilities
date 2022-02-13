@@ -4,8 +4,9 @@ const logicHelper = require("logicHelper");
 var enUnitHealthBar = false, enLogicHelper = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
-    const buttonStyleTogglet = Styles.logicTogglet;
-    const buttonStyle = Styles.logict;
+    const buttonStyleTogglet = Styles.clearToggleMenut;
+    const buttonStyle = Styles.cleart;
+    var funcSetTextb = c => {c.getLabel().setWrap(false);c.getLabelCell().pad(6)};
 
     const dragTable = extend(Table, {
         curx : 100, cury : 200, fromx : 0, fromy : 0
@@ -42,11 +43,11 @@ Events.on(EventType.ClientLoadEvent, e => {
         t.table(cons(sqb => {
             sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
                 Call.sendChatMessage("/sync");
-            }).height(36);
+            }).with(funcSetTextb);
         
             sqb.button("@main.buttons.rebuild", buttonStyle, () => {
                 rebuildBlocks();
-            }).height(36);
+            }).with(funcSetTextb);
         }));
         
         t.row();
@@ -54,7 +55,7 @@ Events.on(EventType.ClientLoadEvent, e => {
         t.table(cons(rqb =>  {      
             rqb.button("@main.buttons.mapInfo", buttonStyle, () => {
                 mapInfo.show();
-            }).height(36);
+            }).with(funcSetTextb);
         }));
 
         t.row();
@@ -65,7 +66,7 @@ Events.on(EventType.ClientLoadEvent, e => {
                 enUnitHealthBar = !enUnitHealthBar;
             }).update(b => {
                 b.setChecked(enUnitHealthBar);
-            }).height(36);
+            }).with(funcSetTextb);
 
             /*
             tt.button("@main.buttons.logic", buttonStyleTogglet, () => {

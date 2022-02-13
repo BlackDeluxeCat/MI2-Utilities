@@ -85,7 +85,7 @@ function rebuildVars(tt){
                 let lvar = exec.vars[vi];
                 tt.button(lvar.name, textbStyle, () => {
                     Core.app.setClipboardText(lvar.name);
-                }).growX();
+                }).growX().get().getLabel().setAlignment(Align.left);
                 tt.row();
             }
         }
