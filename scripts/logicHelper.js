@@ -1,9 +1,10 @@
-var lhTable = null;
-var field = null, exec = null, lastexec = null;
-var split = "";
-
+var lhTable = null, varsTable = null;
+var field = null, exec = null, lastexec = null, lastvarslen = 0;
+var split = "", depth = 2;
+var textbStyle;
 module.exports={
     init:function(){
+        textbStyle = Styles.nonet;
         lhTable = extend(Table, Styles.flatDown, {
             curx : 0, cury : 0, fromx : 0, fromy : 0,
             rebuild(){
@@ -26,26 +27,21 @@ module.exports={
                     }));
                     t.table(cons(tt => {
                         tt.add(title).growX();
+                        let f = tt.field(split, Styles.nodeField, () => {
+                            split = f.getText();
+                            rebuildVars(varsTable);
+                        }).get();
+                        f.setMessageText("Delimiter")
                         tt.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
                             this.rebuild();
                         }).size(36, 36);
                     }));
 
-
                     t.row();
 
-                    if(exec != null){
-                        t.pane(cons(tt => {
-                            for(let vi = 0; vi < exec.vars.length; vi++){
-                                let lvar = exec.vars[vi];
-                                tt.button(lvar.name, Styles.nodet, () => {
-                                    Core.app.setClipboardText(lvar.name);
-                                }).growX();
-                                tt.row();
-                            }
-                        })).maxSize(Core.graphics.getWidth() / 3, Core.graphics.getHeight() / 3).growX();
-                    }
-
+                    varsTable = new Table();
+                    rebuildVars(varsTable);
+                    t.pane(varsTable).maxSize(Core.graphics.getWidth() / 2, Core.graphics.getHeight() / 2).growX();
                 }));
             }
         });
@@ -67,12 +63,57 @@ module.exports={
             lhTable.curx = Mathf.clamp(lhTable.curx, 0, (lhTable.hasParent ? lhTable.parent.getWidth() : Core.graphics.getWidth()) - lhTable.getWidth());
             lhTable.cury = Mathf.clamp(lhTable.cury, 0, (lhTable.hasParent ? lhTable.parent.getHeight() : Core.graphics.getHeight()) - lhTable.getHeight());
             lhTable.setPosition(lhTable.curx, lhTable.cury);
-            if(exec != lastexec){
-                lhTable.rebuild();
+            if(lastexec != null && lastvarslen != exec.vars.length || exec != lastexec){
+                rebuildVars(varsTable);
                 lastexec = exec;
+                lastvarslen = exec.vars.length;
             }
         });
     }
 
     
+}
+
+
+function rebuildVars(tt){
+    tt.clear();
+    if(exec != null){
+        if(split != ""){
+            deepSplit(tt, depth);
+        }else{
+            for(let vi = 0; vi < exec.vars.length; vi++){
+                let lvar = exec.vars[vi];
+                tt.button(lvar.name, textbStyle, () => {
+                    Core.app.setClipboardText(lvar.name);
+                }).growX();
+                tt.row();
+            }
+        }
+    }
+}
+
+function deepSplit(t, d){
+    let seq = new Seq();
+    exec.vars.forEach(v => {
+        if(v.constant && v.name.startsWith("___")) return;
+        seq.add(v.name);
+    });
+
+    seq.sort();
+
+    seq.each(name => {
+        let blocks = name.split(split, d);
+        for(let bi = 0; bi < Math.min(d, blocks.length); bi++){
+            let str = blocks[bi] + (bi == blocks.length - 1 ? "":split);
+            t.button(str, textbStyle, () => {
+                Core.app.setClipboardText(str);
+            }).fillX().width(100).get().getLabel().setAlignment(Align.left);
+        }
+        /*
+        t.button(name, textbStyle, () => {
+            Core.app.setClipboardText(name);
+        });
+        */
+        t.row();
+    })
 }
