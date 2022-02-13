@@ -1,22 +1,22 @@
 var content;
 var state;
+var teamData;
 module.exports={
     drawAll:function(){
         state = Vars.state;
         content = Vars.content;
-        let teamData;
         for(let tid = 0; tid < state.teams.getActive().size; tid++){
             teamData = state.teams.getActive().get(tid);
             for(let uid = 0; uid < teamData.units.size; uid++){
                 draw(teamData.units.get(uid));
             }
-
         }
     }
 }
 
 function draw(unit){
     //display healthbar by MI2
+    if(Math.abs(unit.x - Core.camera.position.x) > (Core.camera.width / 2) || Math.abs(unit.y - Core.camera.position.y) > (Core.camera.height / 2)) return;
     Draw.z(Layer.shields + 6);
     Draw.reset();
     if(unit.hitTime > 0){
