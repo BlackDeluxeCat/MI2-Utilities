@@ -11,7 +11,7 @@ module.exports={
                 this.clear();
                 this.table(cons(t => {
                     t.clear();
-                    var title = new Label("Logic Helper");
+                    var title = new Label("@logicHelper.MI2U");
                     title.setAlignment(Align.center);
                     title.addListener(extend(InputListener, {
                         touchDown(event, x, y, pointer, button){
@@ -31,7 +31,7 @@ module.exports={
                             split = f.getText();
                             rebuildVars(varsTable);
                         }).get();
-                        f.setMessageText("Delimiter")
+                        f.setMessageText("@logicHelper.splitField.msg");
                         tt.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
                             this.rebuild();
                         }).size(36, 36);
@@ -57,12 +57,12 @@ module.exports={
         lhTable.rebuild();
         lhTable.left().top().margin(4);
         lhTable.update(() => {
-            lhTable.keepInStage();
-            lhTable.invalidateHierarchy();
-            lhTable.pack();
             lhTable.curx = Mathf.clamp(lhTable.curx, 0, (lhTable.hasParent ? lhTable.parent.getWidth() : Core.graphics.getWidth()) - lhTable.getWidth());
             lhTable.cury = Mathf.clamp(lhTable.cury, 0, (lhTable.hasParent ? lhTable.parent.getHeight() : Core.graphics.getHeight()) - lhTable.getHeight());
             lhTable.setPosition(lhTable.curx, lhTable.cury);
+            lhTable.keepInStage();
+            lhTable.invalidateHierarchy();
+            lhTable.pack();
             if(lastexec != null && lastvarslen != exec.vars.length || exec != lastexec){
                 rebuildVars(varsTable);
                 lastexec = exec;
@@ -102,12 +102,16 @@ function deepSplit(t, d){
     seq.sort();
 
     seq.each(name => {
+        t.button(String.fromCharCode(Iconc.paste), textbStyle, () => {
+            Core.app.setClipboardText(name);
+        }).size(24,24).pad(2);
+
         let blocks = name.split(split, d);
         for(let bi = 0; bi < Math.min(d, blocks.length); bi++){
             let str = blocks[bi] + (bi == blocks.length - 1 ? "":split);
             t.button(str, textbStyle, () => {
                 Core.app.setClipboardText(str);
-            }).fillX().width(100).get().getLabel().setAlignment(Align.left);
+            }).fillX().pad(2).width(100).get().getLabel().setAlignment(Align.left);
         }
         /*
         t.button(name, textbStyle, () => {

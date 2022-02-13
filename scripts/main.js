@@ -21,7 +21,7 @@ Events.on(EventType.ClientLoadEvent, e => {
     }); 
 
     dragTable.table(cons(t => {
-        var titleLabel = new Label("MI2U");
+        var titleLabel = new Label("@main.MI2U");
         titleLabel.setAlignment(Align.center);
         titleLabel.addListener(extend(InputListener, {
             touchDown(event, x, y, pointer, button){
@@ -42,36 +42,38 @@ Events.on(EventType.ClientLoadEvent, e => {
         t.table(cons(sqb => {
             sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
                 Call.sendChatMessage("/sync");
-            }).size(36, 36);
+            }).height(36);
         
-            sqb.button("BP", buttonStyle, () => {
+            sqb.button("@main.buttons.rebuild", buttonStyle, () => {
                 rebuildBlocks();
-            }).size(36, 36);
+            }).height(36);
         }));
         
         t.row();
 
         t.table(cons(rqb =>  {      
-            rqb.button("MapInfo", buttonStyle, () => {
+            rqb.button("@main.buttons.mapInfo", buttonStyle, () => {
                 mapInfo.show();
-            }).size(108, 36);
+            }).height(36);
         }));
 
         t.row();
 
         //hhh the hell of effect buttons
         t.table(cons(tt => {
-            tt.button("UHp", buttonStyleTogglet, () => {
+            tt.button("@main.buttons.unitHpBar", buttonStyleTogglet, () => {
                 enUnitHealthBar = !enUnitHealthBar;
             }).update(b => {
                 b.setChecked(enUnitHealthBar);
-            }).size(48,36);
+            }).height(36);
 
-            tt.button("LH", buttonStyleTogglet, () => {
+            /*
+            tt.button("@main.buttons.logic", buttonStyleTogglet, () => {
                 enLogicHelper = !enLogicHelper;
             }).update(b => {
                 b.setChecked(enLogicHelper);
             }).size(48,36);
+            */
         }));
 
     })).get().background(Styles.black6);

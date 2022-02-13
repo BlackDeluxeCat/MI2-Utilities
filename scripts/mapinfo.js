@@ -2,7 +2,7 @@ module.exports={
     show:function(){
         Log.info("MI2U_MapInfo");
 
-        var mapInfoD = extend(BaseDialog, "MI2U-MapInfo", {
+        var mapInfoD = extend(BaseDialog, "@mapInfo.MI2U", {
             setup(){
                 var state = Vars.state;
                 var control = Vars.control;
@@ -49,25 +49,25 @@ module.exports={
 
                     t.label(() => world != null ? (world.width() + "x" + world.height()):"ohno").colspan(5);
                     t.row();
-                    t.label(() => "UnitCap:" + state.rules.unitCap + (state.rules.unitCapVariable ? "+" + Iconc.blockCoreShard : "")).colspan(5);
+                    t.label(() => Core.bundle.format("mapInfo.unitCapacity", state.rules.unitCap) + (state.rules.unitCapVariable ? "+" + String.fromCharCode(Iconc.blockCoreShard) : "")).colspan(5);
                 }));
                 trule.table(cons(t => {
-                    t.label(() => "BHp ");
-                    t.label(() => "BDmg ");
-                    t.label(() => "UDmg ");
-                    t.label(() => "BCost ");
-                    t.label(() => "BSpd ");
-                    t.label(() => "BRe ");
-                    t.label(() => "USpd ");
+                    t.label(() => "@mapInfo.buildingHpMutil").pad(2);
+                    t.label(() => "@mapInfo.buildingDamageMutil").pad(2);
+                    t.label(() => "@mapInfo.unitDamageMutil").pad(2);
+                    t.label(() => "@mapInfo.buildCostMutil").pad(2);
+                    t.label(() => "@mapInfo.buildSpeedMutil").pad(2);
+                    t.label(() => "@mapInfo.buildRefundMutil").pad(2);
+                    t.label(() => "@mapInfo.unitConstructSpeedMutil").pad(2);
                     t.row();
             
-                    t.label(() => " " + (state.rules.blockHealthMultiplier));
-                    t.label(() => " " + (state.rules.blockDamageMultiplier));
-                    t.label(() => " " + (state.rules.unitDamageMultiplier));
-                    t.label(() => " " + (state.rules.buildCostMultiplier));
-                    t.label(() => " " + (state.rules.buildSpeedMultiplier));
-                    t.label(() => " " + (state.rules.deconstructRefundMultiplier));
-                    t.label(() => " " + (state.rules.unitBuildSpeedMultiplier));
+                    t.label(() => "" + fixNum(state.rules.blockHealthMultiplier, 2)).pad(2);
+                    t.label(() => "" + fixNum(state.rules.blockDamageMultiplier, 2)).pad(2);
+                    t.label(() => "" + fixNum(state.rules.unitDamageMultiplier, 2)).pad(2);
+                    t.label(() => "" + fixNum(state.rules.buildCostMultiplier, 2)).pad(2);
+                    t.label(() => "" + fixNum(state.rules.buildSpeedMultiplier, 2)).pad(2);
+                    t.label(() => "" + fixNum(state.rules.deconstructRefundMultiplier, 2)).pad(2);
+                    t.label(() => "" + fixNum(state.rules.unitBuildSpeedMultiplier, 2)).pad(2);
                 }));
 
                 /* Stats */
@@ -80,7 +80,7 @@ module.exports={
                 })).left();
                 twave.row();
     
-                twave.label(() => "Wave " + (state.wave));
+                twave.label(() => Core.bundle.format("mapInfo.wave", state.wave));
                 twave.row();
     
                 twave.table(cons(t => {
@@ -114,8 +114,7 @@ module.exports={
                             let group = state.rules.spawns.get(sgi);
                             if(group.getSpawned(curInfoWave) > 0){
                                 if(group.effect != null && group.effect != content.getByName(ContentType.status, "none")){
-                                    //t.image(() => group.effect.uiIcon).size(iconMed).scaling(Scaling.fit);
-                                    t.label(() => group.effect.name);
+                                    t.image(group.effect.uiIcon).size(iconMed).scaling(Scaling.fit);
                                 }else{
                                     t.labelWrap("-");
                                 }
@@ -150,16 +149,16 @@ module.exports={
                     });
                 }));
 
-                tmap.add("Team").padLeft(5).padRight(5);
-                tmap.add("UBuild Spd").padLeft(5).padRight(5);
-                tmap.add("Unit Dmg").padLeft(5).padRight(5);
-                tmap.add("Block Hp").padLeft(5).padRight(5);
-                tmap.add("Block Dmg").padLeft(5).padRight(5);
-                tmap.add("Build Spd").padLeft(5).padRight(5);
-                tmap.add("Inf Ammo").padLeft(5).padRight(5);
-                tmap.add("Inf Res").padLeft(5).padRight(5);
-                tmap.add("Cheat").padLeft(5).padRight(5);
-                tmap.add("AI-Tier-CoreSpawn").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.team").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.unitConstructSpeedMutil").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.unitDamageMutil").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.buildingHpMutil").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.buildingDamageMutil").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.buildSpeedMutil").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.infAmmo").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.infRes").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.cheat").padLeft(5).padRight(5);
+                tmap.add("@mapInfo.ai").padLeft(5).padRight(5);
                 for(let ti = 0; ti < state.teams.getActive().size; ti++){
                     let teamData = state.teams.getActive().get(ti);
                     tmap.row();
@@ -173,11 +172,15 @@ module.exports={
                     tmap.add("" + teamRule.infiniteAmmo).color(teamData.team.color);
                     tmap.add("" + teamRule.infiniteResources).color(teamData.team.color);
                     tmap.add("" + teamRule.cheat).color(teamData.team.color);
-                    tmap.add("" + (teamRule.ai ? "AI: T" + teamRule.aiTier + (teamRule.aiCoreSpawn ? ", Core Spawn" : "") : "No")).color(teamData.team.color);
+                    tmap.add("" + (teamRule.ai ? Core.bundle.format("mapInfo.aiAndTier", teamRule.aiTier) + (teamRule.aiCoreSpawn ? "" + Core.bundle.format("mapInfo.aiCoreSpawn") : "") : "")).color(teamData.team.color);
                 }
             }
         });
         mapInfoD.setup();
         mapInfoD.show();
     }
+}
+
+function fixNum(numObj, n){
+    return (numObj + 0).toFixed(n);
 }
