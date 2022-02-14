@@ -32,6 +32,7 @@ module.exports={
 
         table.titleText = titleText;
         table.margin(4);
+        table.clear();
 
         return table;
     }

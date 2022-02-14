@@ -15,8 +15,6 @@ Events.on(EventType.ClientLoadEvent, e => {
 
     dragTable.left().bottom();
 
-    dragTable.clear();
-
     dragTable.table(cons(t => {
         t.table(cons(sqb => {
             sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
