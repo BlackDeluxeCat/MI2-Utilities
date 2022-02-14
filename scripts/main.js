@@ -1,3 +1,4 @@
+const drag = require("dragableTable");
 const mapInfo = require("mapinfo");
 const healthBar = require("healthBar");
 const logicHelper = require("logicHelper");
@@ -8,38 +9,15 @@ Events.on(EventType.ClientLoadEvent, e => {
     const buttonStyle = Styles.cleart;
     var funcSetTextb = c => {c.getLabel().setWrap(false);c.getLabelCell().pad(6)};
 
-    const dragTable = extend(Table, {
-        curx : 100, cury : 200, fromx : 0, fromy : 0
-    });
+    const dragTable = drag.new("@main.MI2U");
     dragTable.name = "MI2U_Main";
     Vars.ui.hudGroup.addChild(dragTable);
 
     dragTable.left().bottom();
-    dragTable.update(() => {
-        dragTable.curx = Mathf.clamp(dragTable.curx, 0, Core.graphics.getWidth() - 100 - dragTable.getWidth());
-        dragTable.cury = Mathf.clamp(dragTable.cury, 0, Core.graphics.getHeight() - 100 - dragTable.getHeight());
-        dragTable.setPosition(dragTable.curx, dragTable.cury);
-    }); 
+
+    dragTable.clear();
 
     dragTable.table(cons(t => {
-        var titleLabel = new Label("@main.MI2U");
-        titleLabel.setAlignment(Align.center);
-        titleLabel.addListener(extend(InputListener, {
-            touchDown(event, x, y, pointer, button){
-                dragTable.fromx = x;
-                dragTable.fromy = y;
-                return true;
-            },
-            touchDragged(event, x, y, pointer){
-                let v = dragTable.localToStageCoordinates(Tmp.v1.set(x, y));
-                dragTable.curx = v.x - dragTable.fromx;
-                dragTable.cury = v.y - dragTable.fromy;
-            }
-        }));
-        
-        t.add(titleLabel).center().fillX();
-        t.row();
-
         t.table(cons(sqb => {
             sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
                 Call.sendChatMessage("/sync");

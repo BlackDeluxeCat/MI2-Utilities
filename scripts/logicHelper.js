@@ -1,3 +1,4 @@
+const drag = require("dragableTable");
 var lhTable = null, varsTable = null;
 var field = null, exec = null, lastexec = null, lastvarslen = 0;
 var split = "", depth = 2;
@@ -5,46 +6,29 @@ var textbStyle;
 module.exports={
     init:function(){
         textbStyle = Styles.nonet;
-        lhTable = extend(Table, Styles.flatDown, {
-            curx : 0, cury : 0, fromx : 0, fromy : 0,
-            rebuild(){
-                this.clear();
-                this.table(cons(t => {
-                    t.clear();
-                    var title = new Label("@logicHelper.MI2U");
-                    title.setAlignment(Align.center);
-                    title.addListener(extend(InputListener, {
-                        touchDown(event, x, y, pointer, button){
-                            lhTable.fromx = x;
-                            lhTable.fromy = y;
-                            return true;
-                        },
-                        touchDragged(event, x, y, pointer){
-                            let v = lhTable.localToStageCoordinates(Tmp.v1.set(x, y));
-                            lhTable.curx = v.x - lhTable.fromx;
-                            lhTable.cury = v.y - lhTable.fromy;
-                        }
-                    }));
-                    t.table(cons(tt => {
-                        tt.add(title).growX();
-                        let f = tt.field(split, Styles.nodeField, () => {
-                            split = f.getText();
-                            rebuildVars(varsTable);
-                        }).get();
-                        f.setMessageText("@logicHelper.splitField.msg");
-                        tt.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
-                            this.rebuild();
-                        }).size(36, 36);
-                    }));
-
-                    t.row();
-
-                    varsTable = new Table();
-                    rebuildVars(varsTable);
-                    t.pane(varsTable).maxSize(Core.graphics.getWidth() / 2, Core.graphics.getHeight() / 2).growX();
+        lhTable = drag.new("@logicHelper.MI2U");
+        lhTable.rebuild = function(){
+            this.clear();
+            this.table(cons(t => {
+                t.clear();
+                t.table(cons(tt => {
+                    let f = tt.field(split, Styles.nodeField, () => {
+                        split = f.getText();
+                        rebuildVars(varsTable);
+                    }).fillX().get();
+                    f.setMessageText("@logicHelper.splitField.msg");
+                    tt.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
+                        this.rebuild();
+                    }).size(36, 36);
                 }));
-            }
-        });
+
+                t.row()                
+
+                varsTable = new Table();
+                rebuildVars(varsTable);
+                t.pane(varsTable).maxSize(Core.graphics.getWidth() / 2, Core.graphics.getHeight() / 2).growX();
+            }));
+        };
 
         var dialog = Vars.ui.logic;
         dialog.addChild(lhTable);
