@@ -2,7 +2,8 @@ const drag = require("dragableTable");
 const mapInfo = require("mapinfo");
 const healthBar = require("healthBar");
 const logicHelper = require("logicHelper");
-var enUnitHealthBar = false, enLogicHelper = false;
+const emojis = require("emoji");
+var enUnitHealthBar = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
     const buttonStyleTogglet = Styles.clearToggleMenut;
@@ -12,6 +13,7 @@ Events.on(EventType.ClientLoadEvent, e => {
     const dragTable = drag.new("@main.MI2U");
     dragTable.name = "MI2U_Main";
     Vars.ui.hudGroup.addChild(dragTable);
+    initModules();
 
     dragTable.left().bottom();
 
@@ -44,18 +46,14 @@ Events.on(EventType.ClientLoadEvent, e => {
                 b.setChecked(enUnitHealthBar);
             }).with(funcSetTextb);
 
-            /*
-            tt.button("@main.buttons.logic", buttonStyleTogglet, () => {
-                enLogicHelper = !enLogicHelper;
+            tt.button("@main.buttons.emoji", buttonStyleTogglet, () => {
+                emojis.setShow(!emojis.getShow());
             }).update(b => {
-                b.setChecked(enLogicHelper);
-            }).size(48,36);
-            */
+                b.setChecked(emojis.getShow());
+            }).with(funcSetTextb);
         }));
 
     })).get().background(Styles.black6);
-
-    logicHelper.init();
 });
 
 function rebuildBlocks(){
@@ -69,6 +67,11 @@ function rebuildBlocks(){
         if(p > 511) break;
         player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, Vars.content.block(block.block), block.config));
     }
+}
+
+function initModules(){
+    logicHelper.init();
+    emojis.init();
 }
 
 Events.run(Trigger.draw, () => {
