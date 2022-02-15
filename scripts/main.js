@@ -3,6 +3,7 @@ const mapInfo = require("mapinfo");
 const healthBar = require("healthBar");
 const logicHelper = require("logicHelper");
 const emojis = require("emoji");
+const teamInfo = require("teamInfo");
 var enUnitHealthBar = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
@@ -46,6 +47,17 @@ Events.on(EventType.ClientLoadEvent, e => {
             }).update(b => {
                 b.setChecked(enUnitHealthBar);
             }).with(funcSetTextb);
+        }));
+
+        t.row();
+
+        //mindow buttons
+        t.table(cons(tt => {
+            tt.button("@main.buttons.teamInfo", buttonStyleTogglet, () => {
+                teamInfo.setShow(!teamInfo.getShow());
+            }).update(b => {
+                b.setChecked(teamInfo.getShow());
+            }).with(funcSetTextb);
 
             tt.button("@main.buttons.emoji", buttonStyleTogglet, () => {
                 emojis.setShow(!emojis.getShow());
@@ -73,6 +85,7 @@ function unitRebuildBlocks(){
 function initModules(){
     logicHelper.init();
     emojis.init();
+    teamInfo.init();
 }
 
 Events.run(Trigger.draw, () => {
