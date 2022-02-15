@@ -12,19 +12,20 @@ Events.on(EventType.ClientLoadEvent, e => {
 
     const dragTable = drag.new("@main.MI2U");
     dragTable.name = "MI2U_Main";
-    Vars.ui.hudGroup.addChild(dragTable);
+    dragTable.closable = false;
+    dragTable.setShow(true);
     initModules();
 
     dragTable.left().bottom();
 
-    dragTable.table(cons(t => {
+    dragTable.cont.table(cons(t => {
         t.table(cons(sqb => {
             sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
                 Call.sendChatMessage("/sync");
             }).with(funcSetTextb);
         
             sqb.button("@main.buttons.rebuild", buttonStyle, () => {
-                rebuildBlocks();
+                unitRebuildBlocks();
             }).with(funcSetTextb);
         }));
         
@@ -56,7 +57,7 @@ Events.on(EventType.ClientLoadEvent, e => {
     })).get().background(Styles.black6);
 });
 
-function rebuildBlocks(){
+function unitRebuildBlocks(){
     var player = Vars.player;
     if(!player.unit().canBuild()) return;
     var p = 0;

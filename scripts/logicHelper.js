@@ -7,9 +7,10 @@ module.exports={
     init:function(){
         textbStyle = Styles.nonet;
         lhTable = drag.new("@logicHelper.MI2U");
-        lhTable.rebuild = function(){
-            this.clear();
-            this.table(cons(t => {
+        lhTable.closable = false;
+        lhTable.rebuildCont = function(){
+            this.cont.clear();
+            this.cont.table(cons(t => {
                 t.clear();
                 t.table(cons(tt => {
                     let f = tt.field(split, Styles.nodeField, () => {

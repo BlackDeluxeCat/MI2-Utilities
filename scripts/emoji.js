@@ -11,31 +11,17 @@ module.exports={
             c.getLabelCell().pad(2)
         };
         emojiTable = drag.new("@emoji.MI2U");
-        emojiTable.update(() => emojiTable.setZIndex(1000));
         emojiTable.listMode = false;
-        emojiTable.minimized = false;
-        emojiTable.rebuild = function(){
-            this.clear();
-            this.table(cons(t => {
+        emojiTable.rebuildCont = function(){
+            this.cont.clear();
+            this.cont.table(cons(t => {
                 t.table(cons(tt => {
-                    tt.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
-                        this.rebuild();
-                    }).size(36, 36);
                     tt.button(String.fromCharCode(Iconc.list), Styles.clearToggleMenut, () => {
                         this.listMode = !this.listMode;
                         this.rebuild();
                     }).size(36, 36).update(b => {
                         b.setChecked(this.listMode);
                     });
-                    tt.button("-", Styles.cleart, () => {
-                        this.minimized = !this.minimized;
-                        this.rebuild();
-                    }).size(36, 36).update(b => {
-                        b.setChecked(this.minimized);
-                    });
-                    tt.button("X", Styles.cleart, () => {
-                        setShow(false);
-                    }).size(36, 36);
                 }));
                 if(this.minimized) return;
 
@@ -67,30 +53,17 @@ module.exports={
                             }
                         });
                     }
-                })).maxSize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4);
+                })).maxHeight(Core.graphics.getHeight() / 3).growX();
             }));
         };
-        emojiTable.rebuild();
+        emojiTable.rebuildCont();
     },
 
     setShow:function(state){
-        setShow(state);
+        emojiTable.setShow(state);
     },
 
     getShow:function(){
-        return getShow();
+        return emojiTable.getShow();
     }
-}
-
-function setShow(state){
-    if(state == true){
-        Core.scene.add(emojiTable);
-    }else{
-        emojiTable.remove();
-    }
-}
-
-function getShow(){
-    if(emojiTable.hasParent()) return true;
-    return false;
 }
