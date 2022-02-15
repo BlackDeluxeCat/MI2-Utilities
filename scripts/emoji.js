@@ -27,39 +27,44 @@ module.exports={
 
                 t.row();
 
-                let field;
-                if(Vars.android){
-                    field = java.lang.Class.forName("io.anuke.mindustry.ui.Fonts").getDeclaredField("stringIcons");
-                }else{
-                    field = java.lang.Class.forName("mindustry.ui.Fonts").getDeclaredField("stringIcons");
-                }
-                field.setAccessible(true);
-                let map = field.get(null);
-                
-                t.pane(cons(tt => {
-                    if(this.listMode){
-                        map.each((name, emoji) => {
-                            tt.button(name, textbStyle, () => {
-                                Core.app.setClipboardText(name);
-                            }).growX().with(funcSetTextb);
-                            tt.button(emoji, textbStyle, () => {
-                                Core.app.setClipboardText(emoji);
-                            }).growX().with(funcSetTextb);
-                            tt.row();
-                        });
+                try{
+                    let field;
+                    if(Vars.android){
+                        field = java.lang.Class.forName("io.anuke.mindustry.ui.Fonts").getDeclaredField("stringIcons");
                     }else{
-                        tmpindex = 0;
-                        map.each((name, emoji) => {
-                            let cell = tt.button(emoji, textbStyle, () => {
-                                Core.app.setClipboardText(emoji);
-                            }).growX().with(funcSetTextb);
-                            if(++tmpindex > 8){
-                                tt.row();
-                                tmpindex = 0;
-                            }
-                        });
+                        field = java.lang.Class.forName("mindustry.ui.Fonts").getDeclaredField("stringIcons");
                     }
-                })).maxHeight(Core.graphics.getHeight() / 3).growX();
+                    field.setAccessible(true);
+                    let map = field.get(null);
+                    
+                    t.pane(cons(tt => {
+                        if(this.listMode){
+                            map.each((name, emoji) => {
+                                tt.button(name, textbStyle, () => {
+                                    Core.app.setClipboardText(name);
+                                }).growX().with(funcSetTextb);
+                                tt.button(emoji, textbStyle, () => {
+                                    Core.app.setClipboardText(emoji);
+                                }).growX().with(funcSetTextb);
+                                tt.row();
+                            });
+                        }else{
+                            tmpindex = 0;
+                            map.each((name, emoji) => {
+                                let cell = tt.button(emoji, textbStyle, () => {
+                                    Core.app.setClipboardText(emoji);
+                                }).growX().with(funcSetTextb);
+                                if(++tmpindex > 8){
+                                    tt.row();
+                                    tmpindex = 0;
+                                }
+                            });
+                        }
+                    })).maxHeight(Core.graphics.getHeight() / 3).growX();
+                }catch(e){
+                    t.row();
+                    t.add(e.toString());
+                }
             }));
         };
         emojiTable.rebuildCont();
