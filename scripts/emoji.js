@@ -27,9 +27,15 @@ module.exports={
 
                 t.row();
 
-                let field = java.lang.Class.forName("mindustry.ui.Fonts").getDeclaredField("stringIcons");
+                let field;
+                if(Vars.android){
+                    field = java.lang.Class.forName("io.anuke.mindustry.ui.Fonts").getDeclaredField("stringIcons");
+                }else{
+                    field = java.lang.Class.forName("mindustry.ui.Fonts").getDeclaredField("stringIcons");
+                }
                 field.setAccessible(true);
                 let map = field.get(null);
+                
                 t.pane(cons(tt => {
                     if(this.listMode){
                         map.each((name, emoji) => {
