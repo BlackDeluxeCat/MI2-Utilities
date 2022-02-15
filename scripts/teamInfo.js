@@ -22,7 +22,7 @@ module.exports={
                 core = Vars.player.team().core();
 
                 if(Vars.state.isGame() && core != null && interval.get(60)){
-                    content.items().forEach(item => {
+                    content.items().each(item => {
                         lastLastItemsAmt.put(item, lastItemsAmt.get(item));
                         lastItemsAmt.put(item, core.items.get(item));
                     });
@@ -33,7 +33,7 @@ module.exports={
 
             
             this.cont.clear();
-            content.items().forEach(item => {
+            content.items().each(item => {
                 this.cont.stack(
                     new Image(item.uiIcon),
                     new Table(cons(t => t.label(() => core == null ? "" : (lastItemsAmt.get(item) - lastLastItemsAmt.get(item) >= 0 ? "[green]+" : "[red]") + (lastItemsAmt.get(item) - lastLastItemsAmt.get(item))).get().setFontScale(0.6))).right().bottom()
@@ -54,7 +54,7 @@ module.exports={
             i = 0;
             this.cont.row();
 
-            content.units().forEach(type => {
+            content.units().each(type => {
                 this.cont.image(type.uiIcon).size(iconSmall).padRight(3).tooltip(cons(t => t.background(Styles.black6).margin(4).add(type.localizedName).style(Styles.outlineLabel)));
                 this.cont.label(() => core == null ? "0" : UI.formatAmount(core.team.data().countType(type))).padRight(3).minWidth(52).left();
 
