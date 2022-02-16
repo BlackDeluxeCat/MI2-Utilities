@@ -47,7 +47,7 @@ module.exports={
                     if(this == currTopmost) this.setZIndex(1000);
                     title.setStyle(this.aboveSnap == null ? titleStyleNormal : titleStyleSnapped);
                 }).growX().fillY();
-                title.name = "MI2Drag";
+                title.name = "Mindow";
                 title.setAlignment(Align.center);
                 title.addListener(extend(InputListener, {
                     touchDown(event, x, y, pointer, button){
@@ -58,7 +58,7 @@ module.exports={
                     touchDragged(event, x, y, pointer){
                         let v = table.localToStageCoordinates(Tmp.v1.set(x, y));
                         let hit = Core.scene.hit(v.x + title.x, v.y + title.y, false);
-                        if(hit != null && hit.hasParent() && hit.name == "MI2Drag" && hit != title && hit.parent.jsSelf().aboveSnap != table){
+                        if(hit != null && hit.hasParent() && hit.name == "Mindow" && hit != title && hit.parent.jsSelf().aboveSnap != table){
                             table.aboveSnap = hit.parent;
                         }else{
                             table.aboveSnap = null;

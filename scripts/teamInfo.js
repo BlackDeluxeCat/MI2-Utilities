@@ -1,4 +1,4 @@
-const drag = require("dragableTable");
+const drag = require("Mi2ndow");
 var teamTable, gamestate, core;
 var lastItemsAmt, lastLastItemsAmt, interval;
 module.exports={

@@ -1,4 +1,4 @@
-const drag = require("dragableTable");
+const drag = require("Mi2ndow");
 var lhTable = null, varsTable = null;
 var field = null, exec = null, lastexec = null, lastvarslen = 0;
 var split = "", depth = 2;

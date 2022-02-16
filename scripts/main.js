@@ -1,4 +1,4 @@
-const drag = require("dragableTable");
+const drag = require("Mi2ndow");
 const mapInfo = require("mapinfo");
 const healthBar = require("healthBar");
 const logicHelper = require("logicHelper");
