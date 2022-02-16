@@ -1,4 +1,4 @@
-const drag = require("Mi2ndow");
+const drag = require("ui/Mi2ndow");
 var emojiTable;
 var textbStyle;
 let tmpindex;

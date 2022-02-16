@@ -1,7 +1,7 @@
-const drag = require("Mi2ndow");
+const drag = require("ui/Mi2ndow");
 var lhTable = null, varsTable = null;
 var field = null, exec = null, lastexec = null, lastvarslen = 0;
-var split = "", depth = 2;
+var split = "", depth = 6;
 var textbStyle;
 module.exports={
     init:function(){
@@ -19,16 +19,13 @@ module.exports={
                         rebuildVars(varsTable);
                     }).fillX().get();
                     f.setMessageText("@logicHelper.splitField.msg");
-                    tt.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
-                        this.rebuild();
-                    }).size(36, 36);
                 }));
 
                 t.row()                
 
                 varsTable = new Table();
                 rebuildVars(varsTable);
-                t.pane(varsTable).maxSize(Core.graphics.getWidth() / 2, Core.graphics.getHeight() / 2).growX();
+                t.pane(varsTable).growX().maxSize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 3);
             }));
         };
 
@@ -90,14 +87,19 @@ function deepSplit(t, d){
     seq.each(name => {
         t.button(String.fromCharCode(Iconc.paste), textbStyle, () => {
             Core.app.setClipboardText(name);
-        }).size(24,24).pad(2);
+        }).size(36,24);
 
         let blocks = name.split(split, d);
         for(let bi = 0; bi < Math.min(d, blocks.length); bi++){
             let str = blocks[bi] + (bi == blocks.length - 1 ? "":split);
             t.button(str, textbStyle, () => {
                 Core.app.setClipboardText(str);
-            }).fillX().pad(2).width(100).get().getLabel().setAlignment(Align.left);
+            }).left().with(c => {
+                c.getLabel().setWrap(false);
+                c.getLabelCell().width(Math.min(c.getLabelCell().prefWidth(), 140));
+                c.getLabel().setWrap(true);
+                c.getLabel().setAlignment(Align.left);
+            });
         }
         /*
         t.button(name, textbStyle, () => {

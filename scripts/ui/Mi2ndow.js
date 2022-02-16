@@ -9,9 +9,11 @@ let titleStyleNormal, titleStyleSnapped;
 module.exports={
     new:function(titleText){
         titleStyleNormal = new Label.LabelStyle(Fonts.def, new Color(0.8,0.9,1,1));
+        titleStyleNormal.background = Tex.whiteui.tint(1, 0.1, 0.2, 0.8)
         titleStyleSnapped = new Label.LabelStyle(Fonts.def, new Color(0.1,0.6,0.6,1));
+        titleStyleSnapped.background = Tex.whiteui.tint(1, 0.1, 0.2, 0.2)
 
-        let table = extend(Table, Styles.flatDown, {
+        let table = extend(Table, Styles.black5, {
             curx : 0, cury : 0, fromx : 0, fromy : 0, aboveSnap : null,
             titleText : null, titleButtons : null, customInfo : "", cont : new Table(),
             topmost : false, minimized : false, infoview : false, closable : true, 

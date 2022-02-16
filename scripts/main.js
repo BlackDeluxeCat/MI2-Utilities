@@ -1,9 +1,9 @@
-const drag = require("Mi2ndow");
-const mapInfo = require("mapinfo");
+const drag = require("ui/Mi2ndow");
+const mapInfo = require("ui/mapinfo");
 const healthBar = require("healthBar");
-const logicHelper = require("logicHelper");
-const emojis = require("emoji");
-const teamInfo = require("teamInfo");
+const logicHelper = require("ui/logicHelper");
+const emojis = require("ui/emoji");
+const teamInfo = require("ui/teamInfo");
 var enUnitHealthBar = false;
 
 Events.on(EventType.ClientLoadEvent, e => {
@@ -21,13 +21,19 @@ Events.on(EventType.ClientLoadEvent, e => {
     dragTable.left().bottom();
 
     dragTable.cont.table(cons(t => {
-        t.table(cons(sqb => {
-            sqb.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
+        t.table(cons(tt => {
+            tt.button(String.fromCharCode(Iconc.refresh), buttonStyle, () => {
                 Call.sendChatMessage("/sync");
             }).with(funcSetTextb);
         
-            sqb.button("@main.buttons.rebuild", buttonStyle, () => {
+            tt.button("@main.buttons.rebuild", buttonStyle, () => {
                 unitRebuildBlocks();
+            }).with(funcSetTextb);
+
+            tt.button("@main.buttons.unitHpBar", buttonStyleTogglet, () => {
+                enUnitHealthBar = !enUnitHealthBar;
+            }).update(b => {
+                b.setChecked(enUnitHealthBar);
             }).with(funcSetTextb);
         }));
         
@@ -36,17 +42,6 @@ Events.on(EventType.ClientLoadEvent, e => {
         t.table(cons(rqb =>  {      
             rqb.button("@main.buttons.mapInfo", buttonStyle, () => {
                 mapInfo.show();
-            }).with(funcSetTextb);
-        }));
-
-        t.row();
-
-        //hhh the hell of effect buttons
-        t.table(cons(tt => {
-            tt.button("@main.buttons.unitHpBar", buttonStyleTogglet, () => {
-                enUnitHealthBar = !enUnitHealthBar;
-            }).update(b => {
-                b.setChecked(enUnitHealthBar);
             }).with(funcSetTextb);
         }));
 
@@ -67,7 +62,7 @@ Events.on(EventType.ClientLoadEvent, e => {
             }).with(funcSetTextb);
         }));
 
-    })).get().background(Styles.black6);
+    })).get().background(Styles.none);
 });
 
 function unitRebuildBlocks(){
