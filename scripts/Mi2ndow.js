@@ -1,9 +1,10 @@
 let currTopmost = null;
 let titleStyleNormal, titleStyleSnapped;
-/** Author: BlackDeluxeCat
- * A dragable table that partly works like a window. 
+/**  
+ * Mi2ndow is a dragable Table that partly works like a window. 
  * cont is a container for user items. 
  * rebuildCont() can be set(with js) as a member method, which will be called when rebuild().
+ * @author BlackDeluxeCat
  */
 module.exports={
     new:function(titleText){
@@ -12,8 +13,8 @@ module.exports={
 
         let table = extend(Table, Styles.flatDown, {
             curx : 0, cury : 0, fromx : 0, fromy : 0, aboveSnap : null,
-            titleText : null, titleButtons : null, cont : new Table(),
-            topmost : false, minimized : false, closable : true, 
+            titleText : null, titleButtons : null, customInfo : "", cont : new Table(),
+            topmost : false, minimized : false, infoview : false, closable : true, 
 
             rebuild(){
                 this.clear();
@@ -23,12 +24,25 @@ module.exports={
                     /** rebuild cont table */
                     this.rebuildCont();
                 }catch(e){};
-                if(!this.minimized) this.add(this.cont).colspan(2);
-            },
-
-            /** return the js-extended table, not arc.scene.ui.layout.Table */
-            jsSelf(){
-                return table;
+                if(!this.minimized) this.add(this.infoview ? 
+                    new Table(cons(t => {
+                        t.pane(cons(tt => {
+                            tt.add(String.fromCharCode(Iconc.info) + " " + Core.bundle.format("mi2ndow.customInfoTitle")).pad(4).width(Core.graphics.getWidth() / 3).get().setWrap(true);
+                            tt.row();
+                            tt.add(this.customInfo).width(Core.graphics.getWidth() / 3).padBottom(8).get().setWrap(true);
+                            tt.row();
+                            tt.add(String.fromCharCode(Iconc.info) + " " + Core.bundle.format("mi2ndow.uiInfoTitle")).pad(4).width(Core.graphics.getWidth() / 3).get().setWrap(true);
+                            tt.row();
+                            tt.add("@mi2ndow.uiInfo").width(Core.graphics.getWidth() / 3).get().setWrap(true);
+                        })).maxHeight(200).growX().update(p => {
+                            let e = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+                            if(e != null && e.isDescendantOf(p)){
+                                p.requestScroll();
+                            }else if(p.hasScroll()){
+                                Core.scene.setScrollFocus(null);
+                            }
+                        });
+                    })) : this.cont).colspan(2);
             },
 
             setupTitle(){
@@ -44,7 +58,7 @@ module.exports={
                     this.keepInStage();
                     this.invalidateHierarchy();
                     this.pack();
-                    if(this == currTopmost) this.setZIndex(1000);
+                    if(this == currTopmost || this.shouldTopMost()) this.setZIndex(1000);
                     title.setStyle(this.aboveSnap == null ? titleStyleNormal : titleStyleSnapped);
                 }).growX().fillY();
                 title.name = "Mindow";
@@ -69,6 +83,13 @@ module.exports={
                 }));
 
                 this.titleButtons = new Table();
+                this.titleButtons.button(String.fromCharCode(Iconc.info), Styles.clearToggleMenut, () => {
+                    this.infoview = !this.infoview;
+                    this.rebuild();
+                }).size(24, 24).update(b => {
+                    this.topmost = currTopmost == this;
+                    b.setChecked(this.infoview);
+                });
                 this.titleButtons.button(String.fromCharCode(Iconc.refresh), Styles.cleart, () => {
                     this.rebuild();
                 }).size(24, 24);
@@ -83,7 +104,7 @@ module.exports={
                 }).size(24, 24).update(b => {
                     this.topmost = currTopmost == this;
                     b.setChecked(this.topmost);
-                });;
+                });
                 this.titleButtons.button("-", Styles.clearToggleMenut, () => {
                     this.minimized = !this.minimized;
                     this.rebuild();
@@ -92,7 +113,6 @@ module.exports={
                     }else{
                         this.cury -= this.cont.getHeight();
                     }
-                    
                 }).size(24, 24).update(b => {
                     b.setChecked(this.minimized);
                 });
@@ -103,7 +123,18 @@ module.exports={
                 });
                 this.add(this.titleButtons);
             },
+            
+            /** @return the js-extended-table, not arc.scene.ui.layout.Table */
+            jsSelf(){
+                return table;
+            },
 
+            shouldTopMost(){
+                return (this.topmost || (this.aboveSnap !=null && this.aboveSnap.shouldTopMost()));
+            },
+
+            /** control Mi2ndow's show. TODO add target parent sooner
+             * @param state if true, set the parent to Core.scene.root. if false, do this.remove() */
             setShow(state){
                 if(state == true){
                     Core.scene.add(this);

@@ -13,6 +13,7 @@ Events.on(EventType.ClientLoadEvent, e => {
 
     const dragTable = drag.new("@main.MI2U");
     dragTable.name = "MI2U_Main";
+    dragTable.customInfo = "@main.info";
     dragTable.closable = false;
     dragTable.setShow(true);
     initModules();

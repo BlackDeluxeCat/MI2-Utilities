@@ -11,6 +11,7 @@ module.exports={
             c.getLabelCell().pad(2)
         };
         emojiTable = drag.new("@emoji.MI2U");
+        emojiTable.customInfo = "@emoji.info";
         emojiTable.listMode = false;
         emojiTable.rebuildCont = function(){
             this.cont.clear();
@@ -53,7 +54,14 @@ module.exports={
                                 }
                             });
                         }
-                    })).maxHeight(Core.graphics.getHeight() / 3).growX();
+                    })).maxHeight(Core.graphics.getHeight() / 3).growX().update(p => {
+                        let e = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+                        if(e != null && e.isDescendantOf(p)){
+                            p.requestScroll();
+                        }else if(p.hasScroll()){
+                            Core.scene.setScrollFocus(null);
+                        }
+                    });
                 }catch(e){
                     t.row();
                     t.pane(cons(tt=> {tt.add(e.toString())}));

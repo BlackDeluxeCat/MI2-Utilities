@@ -12,6 +12,7 @@ module.exports={
         interval = new Interval();
 
         teamTable = drag.new("@teamInfo.MI2U");
+        teamTable.customInfo = "@teamInfo.info";
         teamTable.rebuildCont = function(){
             this.cont.update(() => {
                 if(gamestate != Vars.state.isGame()){

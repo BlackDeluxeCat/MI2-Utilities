@@ -7,6 +7,7 @@ module.exports={
     init:function(){
         textbStyle = Styles.nonet;
         lhTable = drag.new("@logicHelper.MI2U");
+        lhTable.customInfo = "@logicHelper.info";
         lhTable.closable = false;
         lhTable.rebuildCont = function(){
             this.cont.clear();
