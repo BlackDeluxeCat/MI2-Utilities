@@ -28,15 +28,8 @@ module.exports={
                 t.row();
 
                 try{
-                    let field;
-                    if(Vars.android){
-                        field = java.lang.Class.forName("io.anuke.mindustry.ui.Fonts").getDeclaredField("stringIcons");
-                    }else{
-                        field = java.lang.Class.forName("mindustry.ui.Fonts").getDeclaredField("stringIcons");
-                    }
-                    field.setAccessible(true);
-                    let map = field.get(null);
-                    
+                    let map = Reflect.get(Fonts, "stringIcons");
+
                     t.pane(cons(tt => {
                         if(this.listMode){
                             map.each((name, emoji) => {
@@ -63,7 +56,7 @@ module.exports={
                     })).maxHeight(Core.graphics.getHeight() / 3).growX();
                 }catch(e){
                     t.row();
-                    t.add(e.toString());
+                    t.pane(cons(tt=> {tt.add(e.toString())}));
                 }
             }));
         };
