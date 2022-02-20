@@ -1,3 +1,4 @@
+[Stop updating. See java version here.](https://github.com/BlackDeluxeCat/MI2-Utilities-Java/)
 # MI2-Utilities Testing
 A Mindustry Mod That Adds Useful Vanilla Utilities. MI2-Client Transplantation.
 
